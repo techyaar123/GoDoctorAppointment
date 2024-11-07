@@ -21,7 +21,7 @@ func NewUsersRepository(dbHandler *sql.DB) *UsersRepository {
 func (rr UsersRepository) CreateUser(user *models.Users) (*models.Users, *models.ResponseError) {
 	query := `
 		INSERT INTO Users (username, password, role, first_name, last_name, email, phone_number, address)
-		VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`
+		VALUES (?, ?, ?, ?, ?, ?, ?, ?)`
 
 	res, err := rr.dbHandler.Exec(query, user.Username, user.Password, user.Role, user.FirstName,user.LastName,user.Email,user.Phone,user.Address)
 	if err != nil {
