@@ -4,9 +4,11 @@ import (
 	"encoding/json"
 	"io"
 	"log"
+	"fmt"
 	"net/http"
 	"example.com/GoDoctor/models"
 	"example.com/GoDoctor/services"
+	"strconv"
 
 	"github.com/gin-gonic/gin"
 )
@@ -72,9 +74,14 @@ func (rh UsersController) UpdateUser(ctx *gin.Context) {
 }
 
 func (rh UsersController) DeleteUser(ctx *gin.Context) {
-	userId := ctx.Param("user_id")
+	userId := ctx.Param("id")
+	id,err:=strconv.Atoi(userId)
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": "Invalid ID"})
+		return
+	}
 
-	responseErr := rh.usersService.DeleteUser(userId)
+	responseErr := rh.usersService.DeleteUser(id)
 	if responseErr != nil {
 		ctx.AbortWithStatusJSON(responseErr.Status, responseErr)
 		return
@@ -84,9 +91,15 @@ func (rh UsersController) DeleteUser(ctx *gin.Context) {
 }
 
 func (rh UsersController) GetUser(ctx *gin.Context) {
-	userId := ctx.Param("user_id")
+	userId := ctx.Param("id")
 
-	response, responseErr := rh.usersService.GetUser(userId)
+	id,err:=strconv.Atoi(userId)
+	fmt.Println("id======= ",id)
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": "Invalid ID"})
+		return
+	}
+	response, responseErr := rh.usersService.GetUser(id)
 	if responseErr != nil {
 		ctx.JSON(responseErr.Status, responseErr)
 		return

@@ -38,9 +38,8 @@ func (rr UsersRepository) CreateUser(user *models.Users) (*models.Users, *models
 			Status:  http.StatusInternalServerError,
 		}
 	}
-
 	return &models.Users{
-		ID:        userId,
+		ID: int(userId),
 		Username:  user.Username,
 		Password:  user.Password,
 		Role:      user.Role,
@@ -94,10 +93,9 @@ func (rr UsersRepository) UpdateUser(user *models.Users) *models.ResponseError {
 
 
 
-func (rr UsersRepository) DeleteUser(userId string) *models.ResponseError {
+func (rr UsersRepository) DeleteUser(userId int) *models.ResponseError {
 	query := `DELETE FROM Users WHERE user_id = ?`
-	i,err:=strconv.ParseInt(userId,10,64)
-	res, err := rr.dbHandler.Exec(query, i)
+	res, err := rr.dbHandler.Exec(query, userId)
 	if err != nil {
 		return &models.ResponseError{
 			Message: err.Error(),
@@ -123,15 +121,15 @@ func (rr UsersRepository) DeleteUser(userId string) *models.ResponseError {
 	return nil
 }
 
-func (rr UsersRepository) GetUser(userId string) (*models.Users, *models.ResponseError) {
+func (rr UsersRepository) GetUser(userId int) (*models.Users, *models.ResponseError) {
 	fmt.Println(userId)
+	
 	query := `
 		SELECT *
-		FROM Users
-		WHERE user_id = ?`
+	FROM Users WHERE user_id=?`
 
-	i,err:=strconv.ParseInt(userId,10,64)
-	rows, err := rr.dbHandler.Query(query, i)
+	
+	rows, err := rr.dbHandler.Query(query, userId)
 	if err != nil {
 		return nil, &models.ResponseError{
 			Message: err.Error(),
@@ -159,7 +157,7 @@ func (rr UsersRepository) GetUser(userId string) (*models.Users, *models.Respons
 		}
 	}
 	return &models.Users{
-		ID:           i,
+		ID:           userId,
 		FirstName:    first_name,
 		LastName:     last_name,
 		Username:     username,
@@ -198,9 +196,9 @@ func (rr UsersRepository) GetAllUsers() ([]*models.Users, *models.ResponseError)
 				Status:  http.StatusInternalServerError,
 			}
 		}
-		i,err:= strconv.ParseInt(user_id,10,64)
+		id,err:=strconv.Atoi(user_id)
 		user := &models.Users{
-			ID:           i,
+			ID:           id,
 			FirstName:    first_name,
 			LastName:     last_name,
 			Username:     username,

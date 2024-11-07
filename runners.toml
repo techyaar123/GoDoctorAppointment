@@ -3,11 +3,11 @@
 
 # Connection string is in Go mysql driver format:
 # databaseUser:databaseUserPassword@tcp(host:port)/databaseName
-#connection_string = "root:root123@tcp(localhost:3306)/runners_db"
+#connection_string = "learngo:root123@tcp(localhost:3306)/runners_db"
 
 [database]
 
-connection_string = "root:root@tcp(localhost:3306)/doctor"
+connection_string = "learngo:learngo@tcp(localhost:3306)/doctor"
 max_idle_connections = 5
 max_open_connections = 20
 connection_max_lifetime = "60s"
