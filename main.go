@@ -1,9 +1,24 @@
 package main
 
+import (
+	"log"
+	"example.com/GoDoctor/config"
+	"example.com/GoDoctor/server"
 
-import "fmt"
+	_ "github.com/go-sql-driver/mysql"
+)
 
+func main() {
+	log.Println("Starting Runers App")
 
-func main(){
-	fmt.Println("Hello world")
+	log.Println("Initializig configuration")
+	config := config.InitConfig("runners")
+
+	log.Println("Initializig database")
+	dbHandler := server.InitDatabase(config)
+
+	log.Println("Initializig HTTP sever")
+	httpServer := server.InitHttpServer(config, dbHandler)
+
+	httpServer.Start()
 }
