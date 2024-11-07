@@ -4,6 +4,7 @@ import (
 	"net/http"
 	"example.com/GoDoctor/models"
 	"example.com/GoDoctor/repositories"
+	"strconv"
 )
 
 type UsersService struct {
@@ -26,7 +27,8 @@ func (rs UsersService) CreateUser(user *models.Users) (*models.Users, *models.Re
 }
 
 func (rs UsersService) UpdateUser(user *models.Users) *models.ResponseError {
-	responseErr := validateUserId(user.ID)
+	s := strconv.FormatInt(user.ID, 10)
+	responseErr := validateUserId(s)
 	if responseErr != nil {
 		return responseErr
 	}
@@ -39,7 +41,7 @@ func (rs UsersService) UpdateUser(user *models.Users) *models.ResponseError {
 	return rs.usersRepository.UpdateUser(user)
 }
 
-func (rs UsersService) DeleteUser(userId int64) *models.ResponseError {
+func (rs UsersService) DeleteUser(userId string) *models.ResponseError {
 	responseErr := validateUserId(userId)
 	if responseErr != nil {
 		return responseErr
@@ -48,7 +50,7 @@ func (rs UsersService) DeleteUser(userId int64) *models.ResponseError {
 	return rs.usersRepository.DeleteUser(userId)
 }
 
-func (rs UsersService) GetUser(userId int64) (*models.Users, *models.ResponseError) {
+func (rs UsersService) GetUser(userId string) (*models.Users, *models.ResponseError) {
 	responseErr := validateUserId(userId)
 	if responseErr != nil {
 		return nil, responseErr
@@ -129,8 +131,8 @@ func validateUser(user *models.Users) *models.ResponseError {
 	return nil
 }
 
-func validateUserId(userId int64) *models.ResponseError {
-	if userId == 0 {
+func validateUserId(userId string) *models.ResponseError {
+	if userId == "" {
 		return &models.ResponseError{
 			Message: "Invalid user ID",
 			Status:  http.StatusBadRequest,

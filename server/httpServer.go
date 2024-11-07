@@ -35,7 +35,7 @@ func InitHttpServer(config *viper.Viper, dbHandler *sql.DB) HttpServer {
 	return HttpServer{
 		config:            config,
 		router:            router,
-		runnersController: runnersController,
+		usersController: usersController,
 	}
 }
 

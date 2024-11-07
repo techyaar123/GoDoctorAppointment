@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"net/http"
 	"example.com/GoDoctor/models"
+	"strconv"
 )
 
 type UsersRepository struct {
@@ -93,10 +94,10 @@ func (rr UsersRepository) UpdateUser(user *models.Users) *models.ResponseError {
 
 
 
-func (rr UsersRepository) DeleteUser(userId int64) *models.ResponseError {
+func (rr UsersRepository) DeleteUser(userId string) *models.ResponseError {
 	query := `DELETE FROM Users WHERE user_id = ?`
-
-	res, err := rr.dbHandler.Exec(query, userId)
+	i,err:=strconv.ParseInt(userId,10,64)
+	res, err := rr.dbHandler.Exec(query, i)
 	if err != nil {
 		return &models.ResponseError{
 			Message: err.Error(),
@@ -122,14 +123,15 @@ func (rr UsersRepository) DeleteUser(userId int64) *models.ResponseError {
 	return nil
 }
 
-func (rr UsersRepository) GetUser(userId int64) (*models.Users, *models.ResponseError) {
+func (rr UsersRepository) GetUser(userId string) (*models.Users, *models.ResponseError) {
 	fmt.Println(userId)
 	query := `
 		SELECT *
 		FROM Users
 		WHERE user_id = ?`
 
-	rows, err := rr.dbHandler.Query(query, userId)
+	i,err:=strconv.ParseInt(userId,10,64)
+	rows, err := rr.dbHandler.Query(query, i)
 	if err != nil {
 		return nil, &models.ResponseError{
 			Message: err.Error(),
@@ -138,7 +140,7 @@ func (rr UsersRepository) GetUser(userId int64) (*models.Users, *models.Response
 	}
 
 	defer rows.Close()
-	var user_id int64
+	var user_id string
 	var  first_name, last_name, username, password, role, email,phone_number,address string
 	for rows.Next() {
 		err := rows.Scan(&user_id, &first_name, &last_name, &username, &password, &role, &email, &phone_number,&address)
@@ -156,9 +158,8 @@ func (rr UsersRepository) GetUser(userId int64) (*models.Users, *models.Response
 			Status:  http.StatusInternalServerError,
 		}
 	}
-
 	return &models.Users{
-		ID:           user_id,
+		ID:           i,
 		FirstName:    first_name,
 		LastName:     last_name,
 		Username:     username,
@@ -186,7 +187,7 @@ func (rr UsersRepository) GetAllUsers() ([]*models.Users, *models.ResponseError)
 	defer rows.Close()
 
 	users := make([]*models.Users, 0)
-	var user_id int64
+	var user_id string
 	var  first_name, last_name, username, password, role, email,phone_number,address string
 
 	for rows.Next() {
@@ -197,9 +198,9 @@ func (rr UsersRepository) GetAllUsers() ([]*models.Users, *models.ResponseError)
 				Status:  http.StatusInternalServerError,
 			}
 		}
-
+		i,err:= strconv.ParseInt(user_id,10,64)
 		user := &models.Users{
-			ID:           user_id,
+			ID:           i,
 			FirstName:    first_name,
 			LastName:     last_name,
 			Username:     username,

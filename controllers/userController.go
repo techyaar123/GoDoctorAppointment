@@ -29,15 +29,15 @@ func (rh UsersController) CreateUser(ctx *gin.Context) {
 		return
 	}
 
-	var runner models.Runner
-	err = json.Unmarshal(body, &runner)
+	var user models.Users
+	err = json.Unmarshal(body, &user)
 	if err != nil {
 		log.Println("Error while unmarshaling create runner request body", err)
 		ctx.AbortWithError(http.StatusInternalServerError, err)
 		return
 	}
 
-	response, responseErr := rh.runnersService.CreateRunner(&runner)
+	response, responseErr := rh.usersService.CreateUser(&user)
 	if responseErr != nil {
 		ctx.AbortWithStatusJSON(responseErr.Status, responseErr)
 		return
@@ -96,9 +96,8 @@ func (rh UsersController) GetUser(ctx *gin.Context) {
 }
 
 func (rh UsersController) GetUsersBatch(ctx *gin.Context) {
-	params := ctx.Request.URL.Query()
 
-	response, responseErr := rh.usersService.GetRunnersBatch()
+	response, responseErr := rh.usersService.GetUsersBatch()
 	if responseErr != nil {
 		ctx.JSON(responseErr.Status, responseErr)
 		return
