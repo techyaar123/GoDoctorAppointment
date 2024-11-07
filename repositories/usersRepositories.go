@@ -63,9 +63,9 @@ func (rr UsersRepository) UpdateUser(user *models.Users) *models.ResponseError {
 			email = ?,
 			phone_number = ?,
 			address = ?
-		WHERE user_id = ?`
+		WHERE email = ?`
 
-	res, err := rr.dbHandler.Exec(query, user.Username, user.Password, user.Role, user.FirstName,user.LastName,user.Email,user.Phone,user.Address, user.ID)
+	res, err := rr.dbHandler.Exec(query, user.Username, user.Password, user.Role, user.FirstName,user.LastName,user.Email,user.Phone,user.Address, user.Email)
 	if err != nil {
 		return &models.ResponseError{
 			Message: err.Error(),
