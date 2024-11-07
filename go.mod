@@ -1,6 +1,6 @@
 module example.com/GoDoctor
 
-go 1.13
+go 1.23
 
 require github.com/spf13/viper v1.13.0
 

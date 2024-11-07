@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"net/http"
 	"example.com/GoDoctor/models"
-	"strconv"
 )
 
 type UsersRepository struct {
@@ -39,8 +38,8 @@ func (rr UsersRepository) CreateUser(user *models.Users) (*models.Users, *models
 		}
 	}
 
-	return &models.User{
-		ID:        strconv.FormatInt(userId, 10),
+	return &models.Users{
+		ID:        userId,
 		Username:  user.Username,
 		Password:  user.Password,
 		Role:      user.Role,
@@ -139,7 +138,7 @@ func (rr UsersRepository) GetUser(userId string) (*models.Users, *models.Respons
 	}
 
 	defer rows.Close()
-	var user_id int
+	var user_id int64
 	var  first_name, last_name, username, password, role, email,phone_number,address string
 	for rows.Next() {
 		err := rows.Scan(&user_id, &first_name, &last_name, &username, &password, &role, &email, &phone_number,&address)
@@ -164,14 +163,14 @@ func (rr UsersRepository) GetUser(userId string) (*models.Users, *models.Respons
 		LastName:     last_name,
 		Username:     username,
 		Password:     password,
-		Role:         role
+		Role:         role,
 		Email:        email,
 		Phone:        phone_number,
-		Address:      address
+		Address:      address,
 	}, nil
 }
 
-func (rr UsersRepository) GetAllUsers() ([]*models.User, *models.ResponseError) {
+func (rr UsersRepository) GetAllUsers() ([]*models.Users, *models.ResponseError) {
 	query := `
 	SELECT *
 	FROM Users`
@@ -187,7 +186,7 @@ func (rr UsersRepository) GetAllUsers() ([]*models.User, *models.ResponseError) 
 	defer rows.Close()
 
 	users := make([]*models.Users, 0)
-	var user_id int
+	var user_id int64
 	var  first_name, last_name, username, password, role, email,phone_number,address string
 
 	for rows.Next() {
@@ -205,10 +204,10 @@ func (rr UsersRepository) GetAllUsers() ([]*models.User, *models.ResponseError) 
 			LastName:     last_name,
 			Username:     username,
 			Password:     password,
-			Role:         role
+			Role:         role,
 			Email:        email,
 			Phone:        phone_number,
-			Address:      address
+			Address:      address,
 		}
 
 		users = append(users, user)
