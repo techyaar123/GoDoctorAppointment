@@ -93,7 +93,7 @@ func (rr UsersRepository) UpdateUser(user *models.Users) *models.ResponseError {
 
 
 
-func (rr UsersRepository) DeleteUser(userId string) *models.ResponseError {
+func (rr UsersRepository) DeleteUser(userId int64) *models.ResponseError {
 	query := `DELETE FROM Users WHERE user_id = ?`
 
 	res, err := rr.dbHandler.Exec(query, userId)
@@ -122,7 +122,7 @@ func (rr UsersRepository) DeleteUser(userId string) *models.ResponseError {
 	return nil
 }
 
-func (rr UsersRepository) GetUser(userId string) (*models.Users, *models.ResponseError) {
+func (rr UsersRepository) GetUser(userId int64) (*models.Users, *models.ResponseError) {
 	fmt.Println(userId)
 	query := `
 		SELECT *

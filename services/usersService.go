@@ -4,8 +4,6 @@ import (
 	"net/http"
 	"example.com/GoDoctor/models"
 	"example.com/GoDoctor/repositories"
-	"strconv"
-	"time"
 )
 
 type UsersService struct {
@@ -19,7 +17,7 @@ func NewUsersService(usersRepository *repositories.UsersRepository) *UsersServic
 }
 
 func (rs UsersService) CreateUser(user *models.Users) (*models.Users, *models.ResponseError) {
-	responseErr := validateRunner(user)
+	responseErr := validateUser(user)
 	if responseErr != nil {
 		return nil, responseErr
 	}
@@ -27,7 +25,7 @@ func (rs UsersService) CreateUser(user *models.Users) (*models.Users, *models.Re
 	return rs.usersRepository.CreateUser(user)
 }
 
-func (rs UsersService) UpdateUser(user *models.User) *models.ResponseError {
+func (rs UsersService) UpdateUser(user *models.Users) *models.ResponseError {
 	responseErr := validateUserId(user.ID)
 	if responseErr != nil {
 		return responseErr
@@ -41,7 +39,7 @@ func (rs UsersService) UpdateUser(user *models.User) *models.ResponseError {
 	return rs.usersRepository.UpdateUser(user)
 }
 
-func (rs UsersService) DeleteUser(userId string) *models.ResponseError {
+func (rs UsersService) DeleteUser(userId int64) *models.ResponseError {
 	responseErr := validateUserId(userId)
 	if responseErr != nil {
 		return responseErr
@@ -50,7 +48,7 @@ func (rs UsersService) DeleteUser(userId string) *models.ResponseError {
 	return rs.usersRepository.DeleteUser(userId)
 }
 
-func (rs UsersService) GetUser(userId string) (*models.Users, *models.ResponseError) {
+func (rs UsersService) GetUser(userId int64) (*models.Users, *models.ResponseError) {
 	responseErr := validateUserId(userId)
 	if responseErr != nil {
 		return nil, responseErr
@@ -66,11 +64,11 @@ func (rs UsersService) GetUser(userId string) (*models.Users, *models.ResponseEr
 
 func (rs UsersService) GetUsersBatch() ([]*models.Users, *models.ResponseError) {
 
-	return rs.runnersRepository.GetAllRunners()
+	return rs.usersRepository.GetAllUsers()
 }
 
 
-func validateUser(user *models.User) *models.ResponseError {
+func validateUser(user *models.Users) *models.ResponseError {
 	if user.FirstName == "" {
 		return &models.ResponseError{
 			Message: "Invalid first name",
@@ -81,56 +79,58 @@ func validateUser(user *models.User) *models.ResponseError {
 	if user.LastName == "" {
 		return &models.ResponseError{
 			Message: "Invalid last name",
-			Status:  http.StatusBadRequest}
+			Status:  http.StatusBadRequest,
+		}
 	}
 
 	if user.Username == "" {
-		return &models.ReponseError(
-			Message: "Invalid user name"
-			Status: http.StatusBadRequest}
-		)
+		return &models.ResponseError{
+			Message: "Invalid user name",
+			Status: http.StatusBadRequest,
+		}
 	}
+	
 
 	 if user.Password == "" {
-                return &models.ReponseError(
-                        Message: "Invalid password"
-                        Status: http.StatusBadRequest}
-                )
+                return &models.ResponseError{
+                        Message: "Invalid password",
+                        Status: http.StatusBadRequest,
+				}
         }
 
 	 if user.Role == "" {
-                return &models.ReponseError(
-                        Message: "Invalid role"
-                        Status: http.StatusBadRequest}
-                )
+                return &models.ResponseError{
+                        Message: "Invalid role",
+                        Status: http.StatusBadRequest,
+				}
         }
 
 	 if user.Email == "" {
-                return &models.ReponseError(
-                        Message: "Invalid user email"
-                        Status: http.StatusBadRequest}
-                )
+                return &models.ResponseError{
+                        Message: "Invalid user email",
+                        Status: http.StatusBadRequest,
+				}
         }
 
 	 if user.Phone == "" {
-                return &models.ReponseError(
-                        Message: "Invalid phone number"
-                        Status: http.StatusBadRequest}
-                )
+                return &models.ResponseError{
+                        Message: "Invalid phone number",
+                        Status: http.StatusBadRequest,
+				}
         }
 
 	 if user.Address == "" {
-                return &models.ReponseError(
-                        Message: "Invalid address"
-                        Status: http.StatusBadRequest}
-                )
+                return &models.ResponseError{
+                        Message: "Invalid address",
+                        Status: http.StatusBadRequest,
+				}
         }
 
 	return nil
 }
 
-func validateUserId(userId string) *models.ResponseError {
-	if userId == "" {
+func validateUserId(userId int64) *models.ResponseError {
+	if userId == 0 {
 		return &models.ResponseError{
 			Message: "Invalid user ID",
 			Status:  http.StatusBadRequest,
